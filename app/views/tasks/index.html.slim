@@ -18,3 +18,11 @@ div.row
         div.col-sm-12
           = f.text_area :description, class: 'form-control', placeholder: '説明'
 
+javascript:
+  $(document).ready(function () {
+    $('.task-checkbox').change(function () {
+      var self = $(this);
+      var url = self.data('post-url'), status = self.is(':checked') ? 'done' : 'plan';
+      $.post('#{task_path(}')
+    });
+  });
