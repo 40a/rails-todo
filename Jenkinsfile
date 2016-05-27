@@ -1,22 +1,30 @@
 #!groovy
 
-stage 'Build'
+def jenkinsScriptRepo = 'https://raw.githubusercontent.com/wiro34/jenkins-script/master/ruby_on_rails'
+
+stage 'Setup'
 node {
     checkout scm
-    sh '/opt/jenkins-script/ruby_on_rails/bootstrap.sh'
-    sh '/opt/jenkins-script/ruby_on_rails/build.sh'
+    env.REMOTE_USER = 'ec2-user'
+    env.REMOTE_HOST = '52.40.57.77'
+    env.SSH_KEY = 'jenkins-nodes.pem'
+    sh "curl ${jenkinsScriptRepo}/bootstrap.sh | sh"
+}
+
+stage 'Build'
+node {
+    sh "curl ${jenkinsScriptRepo}/build.sh | sh"
 }
 
 stage 'Test'
 node {
-    checkout scm
-    sh '/opt/jenkins-script/ruby_on_rails/bootstrap.sh'
-    sh '/opt/jenkins-script/ruby_on_rails/test.sh'
+    sh "curl ${jenkinsScriptRepo}/setup_test.sh | sh"
+    sh "curl ${jenkinsScriptRepo}/test.sh | sh"
 }
 
 stage 'Deploy'
 node {
-    sh '/opt/jenkins-script/ruby_on_rails/deploy.sh'
+    sh "curl ${jenkinsScriptRepo}/deploy.sh | sh"
 }
 
 stage 'QA'
