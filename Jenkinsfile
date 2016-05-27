@@ -13,21 +13,31 @@ node {
 
 stage 'Build'
 node {
-    sh "curl ${jenkinsScriptRepo}/build.sh | sh"
+    sh "curl -fsSL ${jenkinsScriptRepo}/build.sh | sh"
 }
 
 stage 'Test'
 node {
-    sh "curl ${jenkinsScriptRepo}/setup_test.sh | sh"
-    sh "curl ${jenkinsScriptRepo}/test.sh | sh"
+    sh "curl -fsSL ${jenkinsScriptRepo}/setup_test.sh | sh"
+    sh "curl -fsSL ${jenkinsScriptRepo}/test.sh | sh"
 }
 
-stage 'Deploy'
+stage 'Staging Deploy'
 node {
-    sh "curl ${jenkinsScriptRepo}/deploy.sh | sh"
+    sh "curl -fsSL ${jenkinsScriptRepo}/deploy.sh | sh"
 }
 
 stage 'QA'
 node {
     input 'Is succeeded system test?'
+}
+
+stage 'Release Judgement'
+node {
+    input 'OK?'
+}
+
+stage 'Production Deploy'
+node {
+    sh "curl -fsSL ${jenkinsScriptRepo}/deploy.sh | sh"
 }
