@@ -1,0 +1,18 @@
+require:
+  - 'rails'
+
+node_template:
+  - name: staging_builder
+    requirements:
+      - mysql
+    environments:
+      RAILS_ENV: staging
+
+pipeline:
+  build:
+    prepare:
+    command:
+  test:
+  staging_deploy:
+  qa:
+  production_deploy:
